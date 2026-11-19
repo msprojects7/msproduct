@@ -1,16 +1,8 @@
 /**
- * MS Backstage — Unified Brand Email Templates
+ * MS Backstage — Unified Clean Light Theme Email Templates
  *
- * Implements the sleek dark/navy glass website theme across all transactional emails:
- * - OTP Verification Codes
- * - Password Reset Requests
- * - Universal Message / System Notifications
- * - Organization Invitations
- * - Attendee Confirmations & Digital Tickets
- * - Payment Receipts & Security Alerts
- *
- * Responsive, inline-styled, accessible, and fully compatible with Gmail,
- * Apple Mail, Outlook, Yahoo, and mobile email clients.
+ * Implements a clean, modern, and accessible light theme designed for both
+ * desktop and mobile email clients (Gmail, Apple Mail, Outlook, Yahoo).
  */
 
 function escapeHtml(str: string): string {
@@ -30,29 +22,30 @@ interface MasterEmailParams {
   subject: string;
   badgeText?: string;
   badgeColor?: string;
+  badgeBg?: string;
   title: string;
   subtitle?: string;
   bodyHtml: string;
-  securityNotice?: string;
 }
 
 /**
- * Master Brand Layout Wrapper (MS Backstage Website Theme)
+ * Master Brand Layout Wrapper (Clean Light Theme)
  */
 function renderBrandEmail({
   subject,
-  badgeText = 'SECURITY & IDENTITY',
-  badgeColor = '#3b82f6',
+  badgeText,
+  badgeColor = '#2563eb',
+  badgeBg = '#eff6ff',
   title,
   subtitle,
   bodyHtml,
-  securityNotice = 'MS Backstage will never request your verification code, password, or authentication credentials via phone or unauthenticated message.',
 }: MasterEmailParams): string {
   const safeSubject = escapeHtml(subject);
-  const safeBadge = escapeHtml(badgeText);
   const safeTitle = escapeHtml(title);
-  const safeSubtitle = subtitle ? `<p style="color: #94a3b8; font-size: 14px; line-height: 1.6; margin: 0 0 24px 0;">${escapeHtml(subtitle)}</p>` : '';
-  const safeNotice = escapeHtml(securityNotice);
+  const safeSubtitle = subtitle ? `<p style="color: #64748b; font-size: 14px; line-height: 1.5; margin: 0 0 20px 0;">${escapeHtml(subtitle)}</p>` : '';
+  const badgeHtml = badgeText
+    ? `<span class="badge-pill" style="display: inline-block; background-color: ${badgeBg}; border: 1px solid #bfdbfe; color: ${badgeColor}; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 3px 8px; border-radius: 9999px;">${escapeHtml(badgeText)}</span>`
+    : '';
 
   return `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -67,41 +60,45 @@ function renderBrandEmail({
   </style>
   <![endif]-->
   <style type="text/css">
-    @media only screen and (max-width: 620px) {
+    @media only screen and (max-width: 600px) {
       .email-container { width: 100% !important; max-width: 100% !important; border-radius: 0 !important; }
-      .email-body { padding: 24px 18px !important; }
-      .email-header { padding: 20px 18px !important; }
-      .otp-code { font-size: 30px !important; letter-spacing: 6px !important; }
+      .email-body { padding: 20px 16px !important; }
+      .email-header { padding: 14px 16px !important; }
+      .brand-title { font-size: 15px !important; }
+      .brand-subtitle { font-size: 9px !important; letter-spacing: 0.5px !important; }
+      .badge-pill { font-size: 8px !important; padding: 2px 6px !important; letter-spacing: 0.5px !important; }
+      .logo-box { width: 32px !important; height: 32px !important; line-height: 32px !important; }
+      .logo-img { width: 20px !important; height: 20px !important; }
+      .otp-code { font-size: 26px !important; letter-spacing: 5px !important; }
+      .main-title { font-size: 17px !important; }
     }
   </style>
 </head>
-<body style="margin: 0; padding: 24px 12px; background-color: #060911; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; color: #f8fafc;">
-  <!-- Background Glow & Table Wrapper -->
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #060911;">
+<body style="margin: 0; padding: 24px 12px; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; color: #0f172a;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f1f5f9;">
     <tr>
       <td align="center">
         <!-- Main Card Container -->
-        <table role="presentation" class="email-container" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 580px; margin: 0 auto; background-color: #0d1322; border: 1px solid #1e293b; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.7);">
+        <table role="presentation" class="email-container" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 560px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.06);">
           
           <!-- BRAND HEADER -->
           <tr>
-            <td class="email-header" style="background: linear-gradient(180deg, #131c31 0%, #0d1322 100%); padding: 26px 32px; border-bottom: 1px solid #1e293b;">
+            <td class="email-header" style="background-color: #ffffff; padding: 20px 28px; border-bottom: 1px solid #e2e8f0;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td align="left" style="vertical-align: middle;">
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                       <tr>
-                        <td style="vertical-align: middle; padding-right: 12px;">
-                          <!-- Logo Icon Container -->
-                          <div style="width: 40px; height: 40px; background: #0f172a; border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 12px; text-align: center; line-height: 40px;">
-                            <img src="${LOGO_URL}" width="26" height="26" alt="MS" style="display: inline-block; vertical-align: middle; border: 0; outline: none; text-decoration: none;" onerror="this.style.display='none'" />
+                        <td style="vertical-align: middle; padding-right: 10px;">
+                          <div class="logo-box" style="width: 34px; height: 34px; background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; text-align: center; line-height: 34px;">
+                            <img class="logo-img" src="${LOGO_URL}" width="22" height="22" alt="MS" style="display: inline-block; vertical-align: middle; border: 0;" onerror="this.style.display='none'" />
                           </div>
                         </td>
                         <td style="vertical-align: middle;">
-                          <span style="color: #ffffff; font-size: 19px; font-weight: 800; letter-spacing: -0.4px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: block; line-height: 1.2;">
+                          <span class="brand-title" style="color: #0f172a; font-size: 16px; font-weight: 800; letter-spacing: -0.3px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: block; line-height: 1.15;">
                             MS Backstage
                           </span>
-                          <span style="color: #64748b; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-top: 3px;">
+                          <span class="brand-subtitle" style="color: #64748b; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-top: 2px;">
                             Event Operations Platform
                           </span>
                         </td>
@@ -109,10 +106,7 @@ function renderBrandEmail({
                     </table>
                   </td>
                   <td align="right" style="vertical-align: middle;">
-                    <!-- Badge Pill -->
-                    <span style="display: inline-block; background-color: rgba(37, 99, 235, 0.15); border: 1px solid rgba(59, 130, 246, 0.35); color: ${badgeColor}; font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; padding: 4px 10px; border-radius: 9999px;">
-                      ${safeBadge}
-                    </span>
+                    ${badgeHtml}
                   </td>
                 </tr>
               </table>
@@ -121,51 +115,23 @@ function renderBrandEmail({
 
           <!-- CARD BODY -->
           <tr>
-            <td class="email-body" style="padding: 36px 32px;">
-              <h1 style="color: #ffffff; font-size: 22px; font-weight: 700; line-height: 1.3; margin: 0 0 10px 0; letter-spacing: -0.3px;">
+            <td class="email-body" style="padding: 28px;">
+              <h1 class="main-title" style="color: #0f172a; font-size: 19px; font-weight: 700; line-height: 1.3; margin: 0 0 10px 0; letter-spacing: -0.2px;">
                 ${safeTitle}
               </h1>
               ${safeSubtitle}
 
               <!-- Main Content Body -->
               ${bodyHtml}
-
-              <!-- Security Notice Card -->
-              <div style="background-color: #080d1a; border: 1px solid #1a253c; border-radius: 12px; padding: 14px 16px; margin-top: 30px;">
-                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                  <tr>
-                    <td style="width: 24px; vertical-align: top; padding-right: 10px; font-size: 16px;">
-                      🛡️
-                    </td>
-                    <td style="color: #94a3b8; font-size: 11.5px; line-height: 1.55; vertical-align: middle;">
-                      <strong style="color: #cbd5e1;">Security Notice:</strong> ${safeNotice}
-                    </td>
-                  </tr>
-                </table>
-              </div>
             </td>
           </tr>
 
           <!-- BRAND FOOTER -->
           <tr>
-            <td style="background-color: #080c16; padding: 24px 32px; border-top: 1px solid #172033; text-align: center;">
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td align="center">
-                    <p style="margin: 0 0 8px 0; color: #94a3b8; font-size: 11.5px; font-weight: 500;">
-                      Next-Generation Event Intelligence &bull; High-Throughput Check-In &bull; Console Operations
-                    </p>
-                    <p style="margin: 0 0 12px 0; font-size: 11px; color: #64748b; line-height: 1.5;">
-                      This is an automated operational notification dispatched by MS Backstage.<br>
-                      Please do not reply directly to this email. For assistance, contact your event administrator.
-                    </p>
-                    <div style="font-size: 11px; color: #475569; padding-top: 6px; border-top: 1px solid #121a2d;">
-                      &copy; 2026 MS Backstage. All rights reserved. &bull;
-                      <a href="${APP_URL}" style="color: #3b82f6; text-decoration: none; margin-left: 4px;">Console Access</a>
-                    </div>
-                  </td>
-                </tr>
-              </table>
+            <td style="background-color: #f8fafc; padding: 20px 32px; border-top: 1px solid #e2e8f0; text-align: center;">
+              <p style="margin: 0; font-size: 11.5px; color: #64748b; font-weight: 500;">
+                &copy; 2026 MS Backstage. All rights reserved.
+              </p>
             </td>
           </tr>
 
@@ -178,7 +144,7 @@ function renderBrandEmail({
 }
 
 /**
- * 1. Email OTP Verification Template (Website Theme)
+ * 1. Email OTP Verification Template (Light Theme)
  */
 export function otpVerificationTemplate(params: {
   otp: string;
@@ -190,58 +156,50 @@ export function otpVerificationTemplate(params: {
   const subject = `Your MS Backstage Verification Code: ${params.otp}`;
 
   const bodyHtml = `
-    <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
+    <p style="color: #334155; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
       Welcome to <strong>MS Backstage</strong>. Enter the 6-digit verification code below to authenticate your email address and continue:
     </p>
 
-    <!-- Modern Dark Glass OTP Card -->
-    <div style="background-color: #060a14; border: 1px solid #1e293b; border-radius: 16px; padding: 26px 20px; text-align: center; margin: 24px 0;">
-      <span style="display: block; color: #64748b; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;">
+    <!-- Clean Light Card for OTP Code -->
+    <div style="background-color: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 24px 16px; text-align: center; margin: 20px 0;">
+      <span style="display: block; color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px;">
         One-Time Verification Code
       </span>
-      <div style="display: inline-block; background-color: #0e172e; border: 1.5px solid #2563eb; border-radius: 12px; padding: 14px 28px; box-shadow: 0 0 25px rgba(37, 99, 235, 0.3);">
-        <span class="otp-code" style="font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 38px; font-weight: 800; letter-spacing: 10px; color: #60a5fa; text-shadow: 0 0 15px rgba(96, 165, 250, 0.5); display: inline-block; margin-left: 10px;">
+      <div style="display: inline-block; background-color: #ffffff; border: 1.5px solid #2563eb; border-radius: 10px; padding: 12px 28px; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.12);">
+        <span class="otp-code" style="font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 36px; font-weight: 800; letter-spacing: 8px; color: #1e40af; display: inline-block; margin-left: 8px;">
           ${otp}
         </span>
       </div>
-      <div style="margin-top: 16px;">
-        <span style="display: inline-block; background-color: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 9999px;">
-          ⏱️ Code expires in ${minutes} minutes
+      <div style="margin-top: 14px;">
+        <span style="display: inline-block; background-color: #f1f5f9; border: 1px solid #cbd5e1; color: #475569; font-size: 12px; font-weight: 600; padding: 4px 14px; border-radius: 9999px;">
+          Code expires in ${minutes} minutes
         </span>
       </div>
     </div>
-
-    <p style="color: #64748b; font-size: 12px; line-height: 1.6; margin: 0;">
-      If you did not initiate this request, you can safely disregard this email. Your account remains completely secure and no changes have been applied.
-    </p>
   `;
 
   const text = `
 MS Backstage — Email Verification Code
 
 Your 6-digit verification code is: ${params.otp}
-
-This code is valid for ${minutes} minutes and can only be used once.
-If you did not request this verification, please disregard this email.
-
-Console: ${APP_URL}
+Code expires in ${minutes} minutes.
   `.trim();
 
   const html = renderBrandEmail({
     subject,
     badgeText: 'VERIFICATION',
-    badgeColor: '#3b82f6',
+    badgeColor: '#2563eb',
+    badgeBg: '#eff6ff',
     title: 'Verify Your Email Address',
     subtitle: 'Enter the verification code to proceed with account setup and console access.',
     bodyHtml,
-    securityNotice: `This code will expire in ${minutes} minutes. Never share this code with anyone, including MS Backstage support.`,
   });
 
   return { subject, html, text };
 }
 
 /**
- * 2. Password Reset Email Template (Website Theme)
+ * 2. Password Reset Email Template (Light Theme)
  */
 export function passwordResetTemplate(params: {
   resetUrl: string;
@@ -251,94 +209,81 @@ export function passwordResetTemplate(params: {
   const subject = `Reset Your MS Backstage Password`;
 
   const bodyHtml = `
-    <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
-      We received an authorization request to reset the password for your <strong>MS Backstage</strong> account. Click the button below to choose a new password:
+    <p style="color: #334155; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
+      We received a request to reset your password for your <strong>MS Backstage</strong> account. Click the button below to choose a new password:
     </p>
 
-    <!-- Primary Gradient Call to Action -->
-    <div style="text-align: center; margin: 32px 0;">
-      <a href="${resetUrl}" style="background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: #ffffff; text-decoration: none; padding: 14px 34px; border-radius: 9999px; font-size: 13.5px; font-weight: 700; display: inline-block; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.45); letter-spacing: 0.3px;">
-        Reset Password &rarr;
+    <!-- Clean Button Call to Action -->
+    <div style="text-align: center; margin: 28px 0;">
+      <a href="${resetUrl}" style="background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 13px 34px; border-radius: 8px; font-size: 14px; font-weight: 600; display: inline-block; box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);">
+        Reset Password
       </a>
     </div>
 
-    <!-- Direct Link Fallback Box -->
-    <div style="background-color: #060a14; border: 1px solid #1e293b; border-radius: 12px; padding: 16px; margin: 24px 0;">
-      <span style="display: block; color: #64748b; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">
-        Direct Link Fallback
+    <div style="text-align: center; margin-top: 16px;">
+      <span style="display: inline-block; background-color: #f1f5f9; border: 1px solid #cbd5e1; color: #475569; font-size: 12px; font-weight: 600; padding: 4px 14px; border-radius: 9999px;">
+        Link expires in 5 minutes
       </span>
-      <p style="margin: 0; word-break: break-all; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; color: #38bdf8; line-height: 1.5;">
-        ${resetUrl}
-      </p>
     </div>
-
-    <p style="color: #64748b; font-size: 12px; line-height: 1.6; margin: 0;">
-      This password reset link is single-use and will expire in <strong>1 hour</strong>. If you did not request a password reset, no action is needed and your account password remains unchanged.
-    </p>
   `;
 
   const text = `
 MS Backstage — Password Reset Request
 
 We received a request to reset your password.
-To set a new password, open the link below:
+To choose a new password, click the link below:
 
 ${params.resetUrl}
 
-This link will expire in 1 hour.
-If you did not make this request, please disregard this email.
+This link will expire in 5 minutes.
   `.trim();
 
   const html = renderBrandEmail({
     subject,
     badgeText: 'SECURITY ACTION',
-    badgeColor: '#818cf8',
+    badgeColor: '#4f46e5',
+    badgeBg: '#eef2ff',
     title: 'Reset Your Account Password',
     subtitle: 'Authorize your password reset to regain access to your event console.',
     bodyHtml,
-    securityNotice: 'If you did not request this password reset, please review your recent account security or contact your administrator.',
   });
 
   return { subject, html, text };
 }
 
 /**
- * 3. Universal Message & Notification Template (Website Theme)
- * Use this template for any general notification, announcement, or alert message.
+ * 3. Universal Message & Notification Template (Light Theme)
  */
 export function universalNotificationTemplate(params: {
   subject: string;
   title: string;
   subtitle?: string;
   badgeText?: string;
-  badgeColor?: string;
   messageHtml: string;
   actionButton?: {
     text: string;
     url: string;
   };
   keyDetails?: Array<{ label: string; value: string }>;
-  securityNotice?: string;
 }): { subject: string; html: string; text: string } {
-  const { subject, title, subtitle, badgeText = 'ANNOUNCEMENT', badgeColor = '#3b82f6' } = params;
+  const { subject, title, subtitle, badgeText = 'NOTIFICATION' } = params;
 
   let bodyHtml = `
-    <div style="color: #cbd5e1; font-size: 14px; line-height: 1.65; margin: 0 0 20px 0;">
+    <div style="color: #334155; font-size: 14px; line-height: 1.65; margin: 0 0 20px 0;">
       ${params.messageHtml}
     </div>
   `;
 
-  // Render optional key details table
   if (params.keyDetails && params.keyDetails.length > 0) {
     bodyHtml += `
-      <div style="background-color: #060a14; border: 1px solid #1e293b; border-radius: 12px; padding: 18px 20px; margin: 22px 0;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #cbd5e1; line-height: 1.8;">
+      <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px 20px; margin: 20px 0;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.8;">
           ${params.keyDetails
             .map(
               (item) => `
             <tr>
               <td style="color: #64748b; font-weight: 500; width: 38%; padding: 4px 0;">${escapeHtml(item.label)}:</td>
-              <td style="color: #f1f5f9; font-weight: 600; padding: 4px 0;">${escapeHtml(item.value)}</td>
+              <td style="color: #0f172a; font-weight: 600; padding: 4px 0;">${escapeHtml(item.value)}</td>
             </tr>
           `
             )
@@ -348,14 +293,13 @@ export function universalNotificationTemplate(params: {
     `;
   }
 
-  // Render optional action button
   if (params.actionButton) {
     const safeUrl = escapeHtml(params.actionButton.url);
     const safeText = escapeHtml(params.actionButton.text);
     bodyHtml += `
-      <div style="text-align: center; margin: 30px 0;">
-        <a href="${safeUrl}" style="background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: #ffffff; text-decoration: none; padding: 13px 32px; border-radius: 9999px; font-size: 13.5px; font-weight: 700; display: inline-block; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.45); letter-spacing: 0.2px;">
-          ${safeText} &rarr;
+      <div style="text-align: center; margin: 28px 0;">
+        <a href="${safeUrl}" style="background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 30px; border-radius: 8px; font-size: 14px; font-weight: 600; display: inline-block;">
+          ${safeText}
         </a>
       </div>
     `;
@@ -367,25 +311,21 @@ ${subtitle ? `${subtitle}\n` : ''}
 ${params.messageHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()}
 ${params.keyDetails ? params.keyDetails.map((k) => `\n- ${k.label}: ${k.value}`).join('') : ''}
 ${params.actionButton ? `\nLink: ${params.actionButton.url}` : ''}
-
-Console: ${APP_URL}
   `.trim();
 
   const html = renderBrandEmail({
     subject,
     badgeText,
-    badgeColor,
     title,
     subtitle,
     bodyHtml,
-    securityNotice: params.securityNotice,
   });
 
   return { subject, html, text };
 }
 
 /**
- * 4. Organization Invitation Email Template (Website Theme)
+ * 4. Organization Invitation Email Template (Light Theme)
  */
 export function invitationTemplate(params: {
   organizationName: string;
@@ -401,60 +341,54 @@ export function invitationTemplate(params: {
   const subject = `Invitation to join ${params.organizationName} on MS Backstage`;
 
   const bodyHtml = `
-    <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
-      You have been invited to join <strong style="color: #ffffff;">${orgName}</strong> on MS Backstage with the role of <strong style="color: #60a5fa;">${roleTitle}</strong>.
+    <p style="color: #334155; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
+      You have been invited to join <strong>${orgName}</strong> on MS Backstage as an <strong>${roleTitle}</strong>.
     </p>
 
-    <div style="background-color: #060a14; border: 1px solid #1e293b; border-radius: 12px; padding: 18px 20px; margin: 20px 0;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #cbd5e1; line-height: 1.8;">
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px 20px; margin: 20px 0;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.8;">
         <tr>
           <td style="color: #64748b; width: 35%;">Organization:</td>
-          <td style="color: #ffffff; font-weight: 700;">${orgName}</td>
+          <td style="color: #0f172a; font-weight: 700;">${orgName}</td>
         </tr>
         <tr>
           <td style="color: #64748b;">Assigned Role:</td>
-          <td style="color: #60a5fa; font-weight: 600;">${roleTitle}</td>
+          <td style="color: #2563eb; font-weight: 600;">${roleTitle}</td>
         </tr>
         <tr>
           <td style="color: #64748b;">Link Validity:</td>
-          <td style="color: #94a3b8;">${days} Days</td>
+          <td style="color: #475569;">${days} Days</td>
         </tr>
       </table>
     </div>
 
-    <div style="text-align: center; margin: 30px 0;">
-      <a href="${inviteUrl}" style="background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: #ffffff; text-decoration: none; padding: 13px 34px; border-radius: 9999px; font-size: 13.5px; font-weight: 700; display: inline-block; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.45);">
-        Accept Invitation &rarr;
+    <div style="text-align: center; margin: 28px 0;">
+      <a href="${inviteUrl}" style="background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 32px; border-radius: 8px; font-size: 14px; font-weight: 600; display: inline-block;">
+        Accept Invitation
       </a>
     </div>
-
-    <p style="color: #64748b; font-size: 12px; line-height: 1.5; margin: 20px 0 0 0;">
-      If you were not expecting this invitation, you can safely ignore this email. Direct link: <br>
-      <span style="font-family: monospace; font-size: 11px; color: #38bdf8; word-break: break-all;">${inviteUrl}</span>
-    </p>
   `;
 
   const text = `
 You have been invited to join ${params.organizationName} on MS Backstage as a ${roleTitle}.
 Accept Invitation: ${params.inviteUrl}
-Link valid for ${days} days.
   `.trim();
 
   const html = renderBrandEmail({
     subject,
     badgeText: 'TEAM INVITATION',
-    badgeColor: '#60a5fa',
+    badgeColor: '#2563eb',
+    badgeBg: '#eff6ff',
     title: "You've Been Invited!",
     subtitle: `Join ${params.organizationName} and collaborate on event operations.`,
     bodyHtml,
-    securityNotice: `This invitation link is valid for ${days} days and restricted to ${params.recipientEmail}.`,
   });
 
   return { subject, html, text };
 }
 
 /**
- * 5. Attendee Registration Confirmation Template (Website Theme)
+ * 5. Attendee Registration Confirmation Template (Light Theme)
  */
 export function attendeeConfirmationTemplate(params: {
   eventName: string;
@@ -469,29 +403,29 @@ export function attendeeConfirmationTemplate(params: {
   const subject = `Registration Confirmed: ${params.eventName} (${params.registrationNumber})`;
 
   const bodyHtml = `
-    <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
-      Dear <strong style="color: #ffffff;">${attendeeName}</strong>, your spot for <strong style="color: #ffffff;">${eventName}</strong> is officially secured.
+    <p style="color: #334155; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
+      Dear <strong>${attendeeName}</strong>, your spot for <strong>${eventName}</strong> has been successfully confirmed.
     </p>
 
-    <div style="background-color: #060a14; border: 1px solid #1e293b; border-radius: 14px; padding: 20px; margin: 22px 0;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13.5px; color: #cbd5e1; line-height: 1.9;">
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px 20px; margin: 20px 0;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13.5px; color: #334155; line-height: 1.8;">
         <tr>
           <td style="color: #64748b; width: 40%;">Registration Number:</td>
-          <td style="color: #38bdf8; font-family: monospace; font-weight: 700; font-size: 15px;">${regNumber}</td>
+          <td style="color: #0f172a; font-family: monospace; font-weight: 700; font-size: 15px;">${regNumber}</td>
         </tr>
         <tr>
-          <td style="color: #64748b;">Attendee Category:</td>
-          <td style="color: #ffffff; font-weight: 600;">${category}</td>
+          <td style="color: #64748b;">Category:</td>
+          <td style="color: #0f172a; font-weight: 600;">${category}</td>
         </tr>
         <tr>
-          <td style="color: #64748b;">Admission Status:</td>
-          <td style="color: #34d399; font-weight: 700;">✓ Confirmed</td>
+          <td style="color: #64748b;">Status:</td>
+          <td style="color: #16a34a; font-weight: 700;">Confirmed</td>
         </tr>
       </table>
     </div>
 
-    <p style="color: #94a3b8; font-size: 12.5px; line-height: 1.6; margin: 0;">
-      Keep your registration number accessible during entry. Our front desk kiosk will scan your confirmation code for instant badge issuance.
+    <p style="color: #64748b; font-size: 12.5px; line-height: 1.5; margin: 0;">
+      Please keep your registration number handy during badge pickup and desk check-in at the venue.
     </p>
   `;
 
@@ -504,19 +438,19 @@ Category: ${params.category}
 
   const html = renderBrandEmail({
     subject,
-    badgeText: 'ADMISSION CONFIRMED',
-    badgeColor: '#34d399',
-    title: 'Your Registration is Confirmed',
+    badgeText: 'CONFIRMED',
+    badgeColor: '#16a34a',
+    badgeBg: '#f0fdf4',
+    title: 'Registration Confirmed',
     subtitle: `We look forward to welcoming you to ${params.eventName}.`,
     bodyHtml,
-    securityNotice: 'Present this confirmation email or your registration number at the venue registration desk.',
   });
 
   return { subject, html, text };
 }
 
 /**
- * 6. Payment Receipt Template (Website Theme)
+ * 6. Payment Receipt Template (Light Theme)
  */
 export function paymentReceiptTemplate(params: {
   eventName: string;
@@ -534,27 +468,27 @@ export function paymentReceiptTemplate(params: {
   const subject = `Payment Receipt: ${formattedAmount} for ${params.eventName}`;
 
   const bodyHtml = `
-    <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
-      Thank you, <strong style="color: #ffffff;">${attendeeName}</strong>. Your payment for <strong style="color: #ffffff;">${eventName}</strong> has been successfully processed.
+    <p style="color: #334155; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
+      Thank you, <strong>${attendeeName}</strong>. Your payment for <strong>${eventName}</strong> has been received and processed.
     </p>
 
-    <div style="background-color: #060a14; border: 1px solid #1e293b; border-radius: 14px; padding: 20px; margin: 22px 0;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13.5px; color: #cbd5e1; line-height: 1.9;">
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px 20px; margin: 20px 0;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13.5px; color: #334155; line-height: 1.8;">
         <tr>
           <td style="color: #64748b; width: 40%;">Amount Paid:</td>
-          <td style="color: #34d399; font-weight: 800; font-size: 17px;">${formattedAmount}</td>
+          <td style="color: #16a34a; font-weight: 800; font-size: 16px;">${formattedAmount}</td>
         </tr>
         <tr>
-          <td style="color: #64748b;">Payment Reference:</td>
-          <td style="color: #38bdf8; font-family: monospace;">${paymentId}</td>
+          <td style="color: #64748b;">Payment ID:</td>
+          <td style="color: #0f172a; font-family: monospace;">${paymentId}</td>
         </tr>
         <tr>
-          <td style="color: #64748b;">Order Identifier:</td>
-          <td style="color: #f1f5f9; font-family: monospace;">${orderId}</td>
+          <td style="color: #64748b;">Order ID:</td>
+          <td style="color: #0f172a; font-family: monospace;">${orderId}</td>
         </tr>
         <tr>
-          <td style="color: #64748b;">Transaction Status:</td>
-          <td style="color: #34d399; font-weight: 700;">Completed &amp; Settled</td>
+          <td style="color: #64748b;">Status:</td>
+          <td style="color: #16a34a; font-weight: 700;">Completed</td>
         </tr>
       </table>
     </div>
@@ -565,24 +499,23 @@ Payment Receipt for ${params.eventName}
 Amount: ${formattedAmount}
 Payment ID: ${params.paymentId}
 Order ID: ${params.orderId}
-Status: Completed
   `.trim();
 
   const html = renderBrandEmail({
     subject,
-    badgeText: 'PAYMENT SUCCESS',
-    badgeColor: '#34d399',
-    title: 'Payment Receipt',
+    badgeText: 'RECEIPT',
+    badgeColor: '#16a34a',
+    badgeBg: '#f0fdf4',
+    title: 'Payment Received',
     subtitle: `Transaction confirmed for ${params.eventName}.`,
     bodyHtml,
-    securityNotice: 'Retain this electronic receipt for your billing and accounting records.',
   });
 
   return { subject, html, text };
 }
 
 /**
- * 7. Security Alert Template (Website Theme)
+ * 7. Security Alert Template (Light Theme)
  */
 export function securityAlertTemplate(params: {
   action: string;
@@ -594,45 +527,40 @@ export function securityAlertTemplate(params: {
   const subject = `Security Alert: ${params.action} on your MS Backstage account`;
 
   const bodyHtml = `
-    <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
+    <p style="color: #334155; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
       A sensitive security action was recently recorded on your account:
     </p>
 
-    <div style="background-color: #1a0b0e; border: 1px solid #7f1d1d; border-radius: 12px; padding: 18px 20px; margin: 20px 0;">
-      <span style="color: #f87171; font-size: 14px; font-weight: 700; display: block; margin-bottom: 6px;">
+    <div style="background-color: #fef2f2; border: 1px solid #fee2e2; border-radius: 10px; padding: 16px 20px; margin: 20px 0;">
+      <span style="color: #b91c1c; font-size: 14px; font-weight: 700; display: block; margin-bottom: 4px;">
         ${action}
       </span>
-      <span style="color: #fca5a5; font-size: 12px; display: block;">
+      <span style="color: #7f1d1d; font-size: 12px; display: block;">
         Timestamp: ${timestamp}
       </span>
     </div>
-
-    <p style="color: #94a3b8; font-size: 12.5px; line-height: 1.6; margin: 0;">
-      If this was initiated by you, no further action is necessary. If you did not perform this action, please reset your password immediately and notify platform security.
-    </p>
   `;
 
   const text = `
 Security Alert: ${params.action}
 Timestamp: ${params.timestamp}
-If this was not you, please secure your account immediately.
   `.trim();
 
   const html = renderBrandEmail({
     subject,
     badgeText: 'SECURITY ALERT',
-    badgeColor: '#ef4444',
-    title: 'Security Notification',
-    subtitle: 'Account monitoring detected an administrative or authentication event.',
+    badgeColor: '#dc2626',
+    badgeBg: '#fef2f2',
+    title: 'Security Alert',
+    subtitle: 'Account monitoring detected an authentication event.',
     bodyHtml,
-    securityNotice: 'If you suspect unauthorized activity, change your password immediately in your account settings.',
   });
 
   return { subject, html, text };
 }
 
 /**
- * 8. Digital Ticket Delivery Template (Website Theme)
+ * 8. Digital Ticket Delivery Template (Light Theme)
  */
 export function digitalTicketDeliveryTemplate(params: {
   eventName: string;
@@ -650,71 +578,67 @@ export function digitalTicketDeliveryTemplate(params: {
   const regNumber = escapeHtml(params.registrationNumber);
   const ticketName = escapeHtml(params.ticketName);
   const category = escapeHtml(params.category);
-  const venue = escapeHtml(params.venue || 'Venue details provided in event portal');
+  const venue = escapeHtml(params.venue || 'Announced in event portal');
   const date = escapeHtml(params.date || 'Scheduled Event');
   const downloadUrl = escapeHtml(params.ticketDownloadUrl);
   const subject = `Your Digital Pass: ${params.eventName} (${params.registrationNumber})`;
 
   const bodyHtml = `
-    <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
-      Hello <strong style="color: #ffffff;">${attendeeName}</strong>, your digital admission pass for <strong style="color: #ffffff;">${eventName}</strong> is issued and ready.
+    <p style="color: #334155; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
+      Hello <strong>${attendeeName}</strong>, your digital admission pass for <strong>${eventName}</strong> is ready.
     </p>
 
-    <div style="background-color: #060a14; border: 1px solid #1e293b; border-radius: 14px; padding: 22px; margin: 22px 0;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13.5px; color: #cbd5e1; line-height: 1.9;">
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px 20px; margin: 20px 0;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.8;">
         <tr>
           <td style="color: #64748b; width: 40%;">Pass Reference:</td>
-          <td style="color: #38bdf8; font-family: monospace; font-weight: 700; font-size: 15px;">${regNumber}</td>
+          <td style="color: #0f172a; font-family: monospace; font-weight: 700; font-size: 14px;">${regNumber}</td>
         </tr>
         <tr>
-          <td style="color: #64748b;">Ticket Class:</td>
-          <td style="color: #ffffff; font-weight: 700;">${ticketName} (${category})</td>
+          <td style="color: #64748b;">Ticket:</td>
+          <td style="color: #0f172a; font-weight: 600;">${ticketName} (${category})</td>
         </tr>
         <tr>
-          <td style="color: #64748b;">Event Date:</td>
-          <td style="color: #f1f5f9;">${date}</td>
+          <td style="color: #64748b;">Date:</td>
+          <td style="color: #0f172a;">${date}</td>
         </tr>
         <tr>
-          <td style="color: #64748b;">Location:</td>
-          <td style="color: #f1f5f9;">${venue}</td>
+          <td style="color: #64748b;">Venue:</td>
+          <td style="color: #0f172a;">${venue}</td>
         </tr>
       </table>
     </div>
 
-    <div style="text-align: center; margin: 30px 0;">
-      <a href="${downloadUrl}" style="background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: #ffffff; text-decoration: none; padding: 14px 34px; border-radius: 9999px; font-size: 13.5px; font-weight: 700; display: inline-block; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.45);">
-        📥 Download Digital Pass (PDF) &rarr;
+    <div style="text-align: center; margin: 26px 0;">
+      <a href="${downloadUrl}" style="background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 30px; border-radius: 8px; font-size: 14px; font-weight: 600; display: inline-block;">
+        Download PDF Ticket
       </a>
     </div>
-
-    <p style="color: #94a3b8; font-size: 12.5px; line-height: 1.6; margin: 0;">
-      <strong>Express Entry:</strong> Save this digital pass to your mobile device. Present the pass QR code at the check-in terminal for touchless badge printing.
-    </p>
   `;
 
   const text = `
 Digital Pass for ${params.eventName}
 Pass: ${params.registrationNumber}
 Attendee: ${params.attendeeName}
-Ticket: ${params.ticketName} (${params.category})
-Download URL: ${params.ticketDownloadUrl}
+Ticket: ${params.ticketName}
+Download: ${params.ticketDownloadUrl}
   `.trim();
 
   const html = renderBrandEmail({
     subject,
     badgeText: 'DIGITAL TICKET',
-    badgeColor: '#38bdf8',
+    badgeColor: '#2563eb',
+    badgeBg: '#eff6ff',
     title: 'Your Digital Pass is Ready',
-    subtitle: `Access credentials and badge QR code for ${params.eventName}.`,
+    subtitle: `Access details for ${params.eventName}.`,
     bodyHtml,
-    securityNotice: 'Each digital pass QR code is cryptographically unique and permits admission for one attendee.',
   });
 
   return { subject, html, text };
 }
 
 /**
- * 9. Organizer Registration Alert Template (Website Theme)
+ * 9. Organizer Registration Alert Template (Light Theme)
  */
 export function organizerRegistrationAlertTemplate(params: {
   eventName: string;
@@ -735,40 +659,40 @@ export function organizerRegistrationAlertTemplate(params: {
   const subject = `New Registration: ${params.orderNumber} for ${params.eventName} (${params.attendeeCount} Attendee${params.attendeeCount > 1 ? 's' : ''})`;
 
   const bodyHtml = `
-    <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
-      A new attendee order has been confirmed for <strong style="color: #ffffff;">${eventName}</strong>.
+    <p style="color: #334155; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
+      A new registration order has been confirmed for <strong>${eventName}</strong>.
     </p>
 
-    <div style="background-color: #060a14; border: 1px solid #1e293b; border-radius: 14px; padding: 20px; margin: 22px 0;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13.5px; color: #cbd5e1; line-height: 1.9;">
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px 20px; margin: 20px 0;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; color: #334155; line-height: 1.8;">
         <tr>
           <td style="color: #64748b; width: 40%;">Order Reference:</td>
-          <td style="color: #38bdf8; font-family: monospace; font-weight: 700;">${orderNumber}</td>
+          <td style="color: #0f172a; font-family: monospace; font-weight: 700;">${orderNumber}</td>
         </tr>
         <tr>
-          <td style="color: #64748b;">Primary Contact:</td>
-          <td style="color: #ffffff; font-weight: 600;">${customerName} (${customerEmail})</td>
+          <td style="color: #64748b;">Customer:</td>
+          <td style="color: #0f172a; font-weight: 600;">${customerName} (${customerEmail})</td>
         </tr>
         <tr>
-          <td style="color: #64748b;">Attendees Registered:</td>
-          <td style="color: #f1f5f9; font-weight: 700;">${params.attendeeCount}</td>
+          <td style="color: #64748b;">Attendees:</td>
+          <td style="color: #0f172a; font-weight: 600;">${params.attendeeCount}</td>
         </tr>
         <tr>
-          <td style="color: #64748b;">Order Total:</td>
-          <td style="color: #34d399; font-weight: 800;">${amountStr}</td>
+          <td style="color: #64748b;">Total:</td>
+          <td style="color: #16a34a; font-weight: 700;">${amountStr}</td>
         </tr>
         <tr>
-          <td style="color: #64748b;">Payment Status:</td>
-          <td style="color: #34d399; font-weight: 700;">${statusStr}</td>
+          <td style="color: #64748b;">Status:</td>
+          <td style="color: #16a34a; font-weight: 700;">${statusStr}</td>
         </tr>
       </table>
     </div>
   `;
 
   const text = `
-New Registration Alert for ${params.eventName}
+New Registration for ${params.eventName}
 Order: ${params.orderNumber}
-Customer: ${params.customerName} (${params.customerEmail})
+Customer: ${params.customerName}
 Attendees: ${params.attendeeCount}
 Amount: ${amountStr}
   `.trim();
@@ -776,11 +700,11 @@ Amount: ${amountStr}
   const html = renderBrandEmail({
     subject,
     badgeText: 'NEW ORDER',
-    badgeColor: '#34d399',
+    badgeColor: '#16a34a',
+    badgeBg: '#f0fdf4',
     title: 'New Event Registration',
     subtitle: `An order has been completed for ${params.eventName}.`,
     bodyHtml,
-    securityNotice: 'Order details and badge print records are synced to your event console.',
   });
 
   return { subject, html, text };
