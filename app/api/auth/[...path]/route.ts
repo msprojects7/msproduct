@@ -15,8 +15,8 @@ export const { GET, PUT, DELETE, PATCH } = handlers;
 export async function POST(req: NextRequest, ctx: any) {
   const pathname = req.nextUrl.pathname;
 
-  // Intercept email sign-in and sign-up requests to enforce self-hosted CAPTCHA, rate limiting, and bot protection
-  if (pathname.endsWith('/sign-in/email') || pathname.endsWith('/sign-up/email')) {
+  // Intercept email sign-in requests to enforce self-hosted CAPTCHA, rate limiting, and bot protection
+  if (pathname.endsWith('/sign-in/email')) {
     const conn = inspectConnectionHeaders(req.headers);
     const ip = conn.ip;
 

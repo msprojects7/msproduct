@@ -51,11 +51,14 @@ function isValidEmail(email: string): boolean {
  * Lightweight native SMTP client using Node.js net/tls sockets
  */
 async function sendViaSmtp(options: EmailOptions): Promise<SendResult> {
-  const host = process.env.SMTP_HOST!;
-  const port = parseInt(process.env.SMTP_PORT || '587', 10);
+  const host = process.env.SMTP_HOST || 'smtp.gmail.com';
+  const port = parseInt(process.env.SMTP_PORT || '465', 10);
   const user = process.env.SMTP_USER!;
   const pass = process.env.SMTP_PASSWORD!;
-  const from = process.env.SMTP_FROM || `no-reply@${host}`;
+  const rawFrom = process.env.SMTP_FROM || `MS Backstage <${user}>`;
+  const fromMatch = rawFrom.match(/<([^>]+)>/);
+  const bareFrom = (fromMatch ? fromMatch[1] : rawFrom.replace(/\"/g, '')).trim();
+  const fromHeader = rawFrom.includes('<') ? rawFrom : `"${rawFrom}" <${bareFrom}>`;
   const isSecure = process.env.SMTP_SECURE === 'true' || port === 465;
 
   return new Promise((resolve) => {
@@ -120,7 +123,7 @@ async function sendViaSmtp(options: EmailOptions): Promise<SendResult> {
         sendCommand(Buffer.from(pass).toString('base64'));
       } else if (step === 4 && code === 235) {
         step = 5;
-        sendCommand(`MAIL FROM:<${from}>`);
+        sendCommand(`MAIL FROM:<${bareFrom}>`);
       } else if (step === 5 && code === 250) {
         step = 6;
         sendCommand(`RCPT TO:<${options.to}>`);
@@ -133,7 +136,7 @@ async function sendViaSmtp(options: EmailOptions): Promise<SendResult> {
         const boundary = `boundary_${Date.now()}_${Math.random().toString(36).substring(2)}`;
 
         const emailContent = [
-          `From: ${from}`,
+          `From: ${fromHeader}`,
           `To: ${options.to}`,
           `Subject: ${options.subject}`,
           `Message-ID: ${msgId}`,

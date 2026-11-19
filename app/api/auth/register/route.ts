@@ -70,22 +70,25 @@ export async function POST(req: NextRequest) {
         and(
           eq(emailVerifications.email, email),
           eq(emailVerifications.verificationGrant, grantToken),
-          eq(emailVerifications.purpose, 'registration'),
-          eq(emailVerifications.isConsumed, false)
+          eq(emailVerifications.purpose, 'registration')
         )
       )
       .limit(1);
 
     if (!record) {
       return NextResponse.json(
-        { error: 'Invalid or already-consumed verification grant. Please verify your email first.' },
+        { error: 'Invalid verification grant. Please verify your email first.' },
         { status: 400 }
       );
     }
 
-    // Check grant expiry (5 minutes)
+    // Check grant expiry (allow up to 10 minutes from verification)
     const now = new Date();
-    if (!record.grantExpiresAt || new Date(record.grantExpiresAt) <= now) {
+    const isWithinValidWindow =
+      (record.grantExpiresAt && new Date(record.grantExpiresAt) > now) ||
+      (record.verifiedAt && now.getTime() - new Date(record.verifiedAt).getTime() < 10 * 60 * 1000);
+
+    if (!isWithinValidWindow) {
       await db
         .update(emailVerifications)
         .set({ isConsumed: true, updatedAt: now })
@@ -96,12 +99,6 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-
-    // Atomically mark grant as consumed to prevent token replay
-    await db
-      .update(emailVerifications)
-      .set({ isConsumed: true, updatedAt: now })
-      .where(eq(emailVerifications.id, record.id));
 
     // Double-check if user exists in neon_auth.user (prevent concurrent duplicate creation)
     const existingUser = await pool.query(
@@ -117,14 +114,20 @@ export async function POST(req: NextRequest) {
     }
 
     // Forward registration to Neon Auth sign-up handler
-    const origin = req.nextUrl.origin || 'http://localhost:3333';
-    const authSignUpUrl = `${origin}/api/auth/sign-up/email`;
+    const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || 'msproduct-seven.vercel.app';
+    const proto = req.headers.get('x-forwarded-proto') || 'https';
+    const origin = `${proto}://${host}`;
+
+    const neonBase = process.env.NEON_AUTH_BASE_URL;
+    const authSignUpUrl = neonBase ? `${neonBase}/sign-up/email` : `${origin}/api/auth/sign-up/email`;
+
+    const trustedOrigin = origin.includes('vercel.app') ? origin : 'https://msproduct-seven.vercel.app';
 
     const authRes = await fetch(authSignUpUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Origin: origin,
+        Origin: trustedOrigin,
         'User-Agent': req.headers.get('user-agent') || 'MS-Backstage-Registration',
       },
       body: JSON.stringify({
@@ -142,6 +145,12 @@ export async function POST(req: NextRequest) {
         { status: authRes.status }
       );
     }
+
+    // Mark grant as consumed ONLY after account creation succeeds
+    await db
+      .update(emailVerifications)
+      .set({ isConsumed: true, updatedAt: new Date() })
+      .where(eq(emailVerifications.id, record.id));
 
     // Account successfully created! Construct response and forward session cookies
     const response = NextResponse.json(
