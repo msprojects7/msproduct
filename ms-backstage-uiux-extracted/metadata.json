@@ -1,6 +1,0 @@
-{
-  "name": "MS BACKSTAGE",
-  "description": "Premium SaaS platform for event registration, attendee management, on-site check-in, badge designer, and event analytics.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

@@ -1,12 +1,3 @@
 {
-  "functions": {
-    "api/index.js": {
-      "includeFiles": "mock_data.json"
-    }
-  },
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" },
-    { "source": "/functions/(.*)", "destination": "/api/index.js" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  "framework": "nextjs"
 }
