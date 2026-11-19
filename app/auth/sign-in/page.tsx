@@ -41,17 +41,32 @@ export default function SignInPage() {
   );
 
   useEffect(() => {
-    const isDev =
+    let isUatOrDev =
       process.env.NODE_ENV !== 'production' ||
       process.env.NEXT_PUBLIC_ENABLE_DEMO_ACCOUNTS === 'true';
-    setIsDevEnvironment(isDev);
 
     if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
       const params = new URLSearchParams(window.location.search);
+      const isUatDomain =
+        hostname.includes('vercel.app') ||
+        hostname.includes('localhost') ||
+        hostname.includes('127.0.0.1') ||
+        hostname.includes('preview') ||
+        hostname.includes('uat') ||
+        hostname.includes('staging');
+      const hasDemoQuery = params.get('demo') === 'true';
+
+      if (isUatDomain || hasDemoQuery) {
+        isUatOrDev = true;
+      }
+
       if (params.get('logged_out') === 'true') {
         setLoggedOutMessage(true);
       }
     }
+
+    setIsDevEnvironment(isUatOrDev);
   }, []);
 
   const handleSubmit = async (e?: React.FormEvent, customCredentials?: { email: string; password: string }) => {

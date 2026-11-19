@@ -39,7 +39,7 @@ export function DemoLoginModal({
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch('/api/auth/demo-accounts');
+        const res = await fetch('/api/auth/demo-accounts?demo=true');
         if (!res.ok) {
           if (res.status === 404) {
             throw new Error('Demo logins are disabled in production or this environment.');

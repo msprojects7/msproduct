@@ -93,12 +93,18 @@ async function sendViaSmtp(options: EmailOptions): Promise<SendResult> {
       // Waiting for initial 220 banner from server
     }
 
-    socket.on('data', (data) => {
-      const response = data.toString();
-      const code = parseInt(response.substring(0, 3), 10);
+    let buffer = '';
 
-      // Handle multi-line responses
-      if (response.charAt(3) === '-') return;
+    socket.on('data', (data) => {
+      buffer += data.toString();
+      const lines = buffer.trim().split('\n');
+      const lastLine = lines[lines.length - 1].trim();
+      const code = parseInt(lastLine.substring(0, 3), 10);
+
+      // Handle multi-line responses (e.g. 250-...) where more lines are pending
+      if (lastLine.length >= 4 && lastLine.charAt(3) === '-') return;
+
+      buffer = '';
 
       if (step === 0 && code === 220) {
         step = 1;
@@ -158,7 +164,7 @@ async function sendViaSmtp(options: EmailOptions): Promise<SendResult> {
         if (!socket.destroyed) socket.end();
         resolve({ success: true, configured: true, messageId: `msg_${Date.now()}` });
       } else if (code >= 400) {
-        handleFailure(`SMTP server rejected with code ${code}: ${response.trim()}`);
+        handleFailure(`SMTP server rejected with code ${code}: ${lastLine}`);
       }
     });
   });
