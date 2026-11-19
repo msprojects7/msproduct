@@ -171,6 +171,22 @@ export async function POST(req: NextRequest) {
 
     if (!emailResult.success) {
       if (!emailResult.configured) {
+        const host = req.headers.get('host') || '';
+        const isUatOrDev =
+          host.includes('vercel.app') ||
+          host.includes('localhost') ||
+          process.env.ENABLE_DEMO_ACCOUNTS === 'true' ||
+          process.env.NEXT_PUBLIC_ENABLE_DEMO_ACCOUNTS === 'true' ||
+          process.env.NODE_ENV !== 'production';
+
+        if (isUatOrDev) {
+          return NextResponse.json({
+            success: true,
+            message: `Verification code generated: ${otp} (SMTP not yet added in Vercel, test code provided)`,
+            devCode: otp,
+          });
+        }
+
         return NextResponse.json(
           { error: 'Email service is unconfigured. Verification code cannot be delivered.' },
           { status: 503 }
