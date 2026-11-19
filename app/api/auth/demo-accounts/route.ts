@@ -6,12 +6,16 @@ export async function GET() {
   // STRICT SERVER-SIDE ENFORCEMENT:
   // Never expose demo accounts or development credentials in production.
   // We do NOT trust client-supplied headers or query params.
-  const isProduction =
-    process.env.NODE_ENV === 'production' ||
-    process.env.VERCEL_ENV === 'production' ||
-    process.env.ENABLE_DEMO_ACCOUNTS === 'false';
+  // Allow demo accounts in development or when explicitly enabled via environment variable
+  const isDemoExplicitlyEnabled =
+    process.env.ENABLE_DEMO_ACCOUNTS === 'true' ||
+    process.env.NEXT_PUBLIC_ENABLE_DEMO_ACCOUNTS === 'true';
 
-  if (isProduction) {
+  const isProduction =
+    !isDemoExplicitlyEnabled &&
+    (process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production');
+
+  if (isProduction || process.env.ENABLE_DEMO_ACCOUNTS === 'false') {
     return NextResponse.json(
       { error: 'Not found' },
       {

@@ -28,7 +28,8 @@ export default function SignInPage() {
   const [demoModalOpen, setDemoModalOpen] = useState(false);
   const [authenticatingDemoRole, setAuthenticatingDemoRole] = useState<string | null>(null);
   const [isDevEnvironment, setIsDevEnvironment] = useState(
-    process.env.NODE_ENV !== 'production'
+    process.env.NODE_ENV !== 'production' ||
+    process.env.NEXT_PUBLIC_ENABLE_DEMO_ACCOUNTS === 'true'
   );
   const [loggedOutMessage, setLoggedOutMessage] = useState(false);
   const [honeypot, setHoneypot] = useState('');
@@ -40,7 +41,9 @@ export default function SignInPage() {
   );
 
   useEffect(() => {
-    const isDev = process.env.NODE_ENV !== 'production';
+    const isDev =
+      process.env.NODE_ENV !== 'production' ||
+      process.env.NEXT_PUBLIC_ENABLE_DEMO_ACCOUNTS === 'true';
     setIsDevEnvironment(isDev);
 
     if (typeof window !== 'undefined') {
