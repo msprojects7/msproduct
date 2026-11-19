@@ -8,7 +8,9 @@ import { SelfHostedCaptcha, CaptchaHandle } from '@/app/components/captcha/SelfH
 import BackButton from '@/app/components/ui/BackButton';
 import { ThemeToggle } from '@/app/components/theme/ThemeToggle';
 import { useTheme } from '@/app/components/theme/ThemeProvider';
-import { Eye, EyeOff, ShieldCheck, Mail, Lock, CheckCircle2, AlertCircle, Loader2, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, ShieldCheck, Mail, Lock, CheckCircle2, AlertCircle, Loader2, ArrowRight, KeyRound } from 'lucide-react';
+import { DemoLoginModal, DemoAccount } from '@/app/components/auth/DemoLoginModal';
+import { authClient } from '@/lib/auth/client';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -37,6 +39,40 @@ export default function SignUpPage() {
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [resendCooldown, setResendCooldown] = useState(0);
   const [otpCountdown, setOtpCountdown] = useState(300); // 5 minutes
+  const [devOtpCode, setDevOtpCode] = useState<string | null>(null);
+
+  // Demo accounts modal
+  const [demoModalOpen, setDemoModalOpen] = useState(false);
+  const [authenticatingDemoRole, setAuthenticatingDemoRole] = useState<string | null>(null);
+
+  const handleSelectDemoAccount = async (account: DemoAccount) => {
+    setAuthenticatingDemoRole(account.roleKey);
+    toast.info(`Authenticating as ${account.roleName}...`);
+    try {
+      const { error: signInError } = await authClient.signIn.email({
+        email: account.email,
+        password: account.password,
+      });
+
+      if (signInError) {
+        const msg = signInError.message || 'Failed to sign in with demo credentials.';
+        setError(msg);
+        toast.error(msg);
+        setAuthenticatingDemoRole(null);
+        return;
+      }
+
+      toast.success(`Signed in as ${account.roleName}! Redirecting...`);
+      setDemoModalOpen(false);
+      router.push(account.landingPage || '/dashboard');
+      router.refresh();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Unexpected error during demo sign in';
+      setError(msg);
+      toast.error(msg);
+      setAuthenticatingDemoRole(null);
+    }
+  };
 
   // Countdown timers
   useEffect(() => {
@@ -102,6 +138,10 @@ export default function SignUpPage() {
         setCaptchaAnswer('');
         setLoading(false);
         return;
+      }
+
+      if (data.devCode) {
+        setDevOtpCode(data.devCode);
       }
 
       setStep('otp');
@@ -318,6 +358,24 @@ export default function SignUpPage() {
             </div>
           )}
 
+          {/* Top Quick Demo Login Bar */}
+          <div className="mb-5">
+            <button
+              type="button"
+              id="signup-top-quick-demo-btn"
+              onClick={() => setDemoModalOpen(true)}
+              className="w-full py-2.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.99] text-white rounded-2xl text-xs font-semibold transition shadow-md shadow-blue-600/20 flex items-center justify-between"
+            >
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>⚡ Quick Demo Logins (5 Verified Roles)</span>
+              </span>
+              <span className="text-[11px] font-medium opacity-90 flex items-center gap-1">
+                Select Account &rarr;
+              </span>
+            </button>
+          </div>
+
           {/* STEP 1: Email & CAPTCHA */}
           {step === 'email' && (
             <form onSubmit={handleSendOtp} className="space-y-4">
@@ -397,6 +455,29 @@ export default function SignUpPage() {
           {/* STEP 2: Enter 6-digit OTP */}
           {step === 'otp' && (
             <form onSubmit={handleVerifyOtp} className="space-y-5">
+              {devOtpCode && (
+                <div className="p-3.5 bg-blue-500/10 border border-blue-500/30 rounded-2xl flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-blue-700 dark:text-blue-300">
+                      Test Verification Code:
+                    </span>
+                    <span className="font-mono font-bold text-sm tracking-widest text-blue-900 dark:text-blue-100 bg-blue-100 dark:bg-blue-900/60 px-2 py-0.5 rounded-lg">
+                      {devOtpCode}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const digits = devOtpCode.split('').slice(0, 6);
+                      setOtp(digits);
+                    }}
+                    className="text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline text-left mt-0.5"
+                  >
+                    Auto-fill verification code &rarr;
+                  </button>
+                </div>
+              )}
+
               <div className="flex justify-between items-center text-xs text-slate-600 dark:text-slate-400">
                 <span>Code expires in: <strong className="text-slate-900 dark:text-white font-mono">{formatTime(otpCountdown)}</strong></span>
                 <button
@@ -510,8 +591,43 @@ export default function SignUpPage() {
               </p>
             </div>
           )}
+
+          {/* Quick Demo Logins Section */}
+          <div className="mt-6 pt-5 border-t border-dashed border-slate-200 dark:border-slate-800">
+            <div className="bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-4 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Quick Demo / Test Logins
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">
+                  DEV / UAT
+                </span>
+              </div>
+              <p className="text-[11.5px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                Skip registration and test directly with one of 5 pre-configured roles (Platform Admin, Org Owner, Event Manager, Desk Staff, Scanner).
+              </p>
+              <button
+                type="button"
+                id="signup-select-demo-account-btn"
+                onClick={() => setDemoModalOpen(true)}
+                className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-full text-xs font-semibold transition shadow-md shadow-blue-600/20 flex items-center justify-center gap-2"
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                Select Test Account
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Demo Logins Dialog */}
+      <DemoLoginModal
+        isOpen={demoModalOpen}
+        onClose={() => setDemoModalOpen(false)}
+        onSelectAccount={handleSelectDemoAccount}
+        authenticatingRole={authenticatingDemoRole}
+      />
     </div>
   );
 }

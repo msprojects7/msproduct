@@ -3,26 +3,10 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
-  const host = req.headers.get('host') || '';
-  const url = new URL(req.url);
-  const demoQuery = url.searchParams.get('demo') === 'true';
+  // Allow demo accounts for testing environments unless explicitly disabled
+  const isDemoForbidden = process.env.ENABLE_DEMO_ACCOUNTS === 'false';
 
-  const isUatHost =
-    host.includes('vercel.app') ||
-    host.includes('localhost') ||
-    host.includes('127.0.0.1') ||
-    host.includes('preview') ||
-    host.includes('uat') ||
-    host.includes('staging');
-
-  const isDemoAllowed =
-    isUatHost ||
-    demoQuery ||
-    process.env.ENABLE_DEMO_ACCOUNTS === 'true' ||
-    process.env.NEXT_PUBLIC_ENABLE_DEMO_ACCOUNTS === 'true' ||
-    process.env.NODE_ENV !== 'production';
-
-  if (!isDemoAllowed || process.env.ENABLE_DEMO_ACCOUNTS === 'false') {
+  if (isDemoForbidden) {
     return NextResponse.json(
       { error: 'Not found' },
       {

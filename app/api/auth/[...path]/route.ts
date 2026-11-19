@@ -83,21 +83,9 @@ export async function POST(req: NextRequest, ctx: any) {
     const captchaAnswer =
       body?.captchaAnswer || req.headers.get('x-captcha-answer');
 
-    const host = req.headers.get('host') || '';
-    const isUatHost =
-      host.includes('vercel.app') ||
-      host.includes('localhost') ||
-      host.includes('127.0.0.1') ||
-      host.includes('preview') ||
-      host.includes('uat') ||
-      process.env.ENABLE_DEMO_ACCOUNTS === 'true' ||
-      process.env.NEXT_PUBLIC_ENABLE_DEMO_ACCOUNTS === 'true' ||
-      process.env.NODE_ENV !== 'production';
-
-    // Development and UAT demo accounts boundary:
-    // Allow verified demo accounts to test without challenge when token is omitted.
+    // Demo accounts boundary:
+    // Allow verified demo accounts to sign in without challenge when token is omitted.
     const isDemoBypass =
-      isUatHost &&
       !captchaToken &&
       (email.endsWith('@msbackstage.internal') ||
         email.endsWith('@apexevents.internal') ||

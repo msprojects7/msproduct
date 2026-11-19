@@ -27,10 +27,7 @@ export default function SignInPage() {
   const [error, setError] = useState<string | null>(null);
   const [demoModalOpen, setDemoModalOpen] = useState(false);
   const [authenticatingDemoRole, setAuthenticatingDemoRole] = useState<string | null>(null);
-  const [isDevEnvironment, setIsDevEnvironment] = useState(
-    process.env.NODE_ENV !== 'production' ||
-    process.env.NEXT_PUBLIC_ENABLE_DEMO_ACCOUNTS === 'true'
-  );
+  const [isDevEnvironment, setIsDevEnvironment] = useState(true);
   const [loggedOutMessage, setLoggedOutMessage] = useState(false);
   const [honeypot, setHoneypot] = useState('');
 
@@ -41,32 +38,17 @@ export default function SignInPage() {
   );
 
   useEffect(() => {
-    let isUatOrDev =
-      process.env.NODE_ENV !== 'production' ||
-      process.env.NEXT_PUBLIC_ENABLE_DEMO_ACCOUNTS === 'true';
+    setIsDevEnvironment(true);
 
     if (typeof window !== 'undefined') {
-      const hostname = window.location.hostname;
       const params = new URLSearchParams(window.location.search);
-      const isUatDomain =
-        hostname.includes('vercel.app') ||
-        hostname.includes('localhost') ||
-        hostname.includes('127.0.0.1') ||
-        hostname.includes('preview') ||
-        hostname.includes('uat') ||
-        hostname.includes('staging');
-      const hasDemoQuery = params.get('demo') === 'true';
-
-      if (isUatDomain || hasDemoQuery) {
-        isUatOrDev = true;
+      if (params.get('demo') === 'true') {
+        setDemoModalOpen(true);
       }
-
       if (params.get('logged_out') === 'true') {
         setLoggedOutMessage(true);
       }
     }
-
-    setIsDevEnvironment(isUatOrDev);
   }, []);
 
   const handleSubmit = async (e?: React.FormEvent, customCredentials?: { email: string; password: string }) => {
@@ -259,6 +241,24 @@ export default function SignInPage() {
               <span>{error}</span>
             </div>
           )}
+
+          {/* Top Quick Demo Login Bar */}
+          <div className="mb-5">
+            <button
+              type="button"
+              id="top-quick-demo-btn"
+              onClick={() => setDemoModalOpen(true)}
+              className="w-full py-2.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.99] text-white rounded-2xl text-xs font-semibold transition shadow-md shadow-blue-600/20 flex items-center justify-between"
+            >
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>⚡ Quick Demo Logins (5 Verified Roles)</span>
+              </span>
+              <span className="text-[11px] font-medium opacity-90 flex items-center gap-1">
+                Select Account &rarr;
+              </span>
+            </button>
+          </div>
 
           {/* Google Sign-In Button */}
           <div className="mb-5">
